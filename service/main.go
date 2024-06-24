@@ -2,6 +2,7 @@ package main
 
 import (
 	"bytes"
+    "crypto/tls"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
@@ -119,6 +120,21 @@ func run(c *cli.Context) {
 	env = *envTmp
 
 	log.Info("Cofing 設定成功")
+	
+    // Define cipher suites
+	cipherSuites := []uint16{
+        tls.TLS_RSA_WITH_AES_256_CBC_SHA,
+    }
+
+	// Setup TLS configuration
+    tlsConfig := &tls.Config{
+        // Certificates:       []tls.Certificate{cert},
+        // RootCAs:            caCertPool,
+        InsecureSkipVerify: true,
+        ServerName:         "smartdata.homecredit.ru", // Match the CN or SAN in the server certificate
+        // ClientAuth:         tls.RequireAnyClientCert,
+        CipherSuites:       cipherSuites,
+    }
 
 	cluster := gocql.NewCluster(strings.Split(env.CassandraHost, ",")...)
 	cluster.Port = env.CassandraPort
@@ -128,6 +144,13 @@ func run(c *cli.Context) {
 	cluster.RetryPolicy = &gocql.SimpleRetryPolicy{NumRetries: 20}
 	cluster.NumConns = 10
 	cluster.Consistency = gocql.One
+	// add cluster props
+	cluster.ProtoVersion = 4
+    cluster.SslOpts = &gocql.SslOptions{
+        Config: tlsConfig,
+        CaPath: "/tmp/certs/ca-cert.pem",
+        EnableHostVerification: true,
+    }
 
 	if env.CassandraUsername != "" && env.CassandraPassword != "" {
 		cluster.Authenticator = gocql.PasswordAuthenticator{
@@ -135,6 +158,8 @@ func run(c *cli.Context) {
 			Password: env.CassandraPassword,
 		}
 	}
+
+	
 
 	session, err := cluster.CreateSession()
 
