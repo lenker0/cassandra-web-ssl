@@ -151,7 +151,7 @@ func run(c *cli.Context) {
         CertPath: "/tmp/certs/cert.pem",,
         KeyPath: "/tmp/certs/key.pem",,
         CaPath: "/tmp/certs/ca-cert.pem",
-        EnableHostVerification: true,
+        EnableHostVerification: false,
     }
 
 	if env.CassandraUsername != "" && env.CassandraPassword != "" {
