@@ -132,7 +132,7 @@ func run(c *cli.Context) {
         // RootCAs:            caCertPool,
         InsecureSkipVerify: true,
         ServerName:         "smartdata.homecredit.ru", // Match the CN or SAN in the server certificate
-        ClientAuth:         tls.RequireAndVerifyClientCert,
+        // ClientAuth:         tls.RequireAnyClientCert,
         CipherSuites:       cipherSuites,
     }
 
@@ -148,9 +148,7 @@ func run(c *cli.Context) {
 	cluster.ProtoVersion = 4
     cluster.SslOpts = &gocql.SslOptions{
         Config: tlsConfig,
-        CertPath: "/tmp/certs/cert.pem",,
-        KeyPath: "/tmp/certs/key.pem",,
-        CaPath: "/tmp/certs/ca-cert.pem",
+        CertPath: "/tmp/certs/cert.pem",
         EnableHostVerification: false,
     }
 
@@ -161,7 +159,6 @@ func run(c *cli.Context) {
 		}
 	}
 
-	
 
 	session, err := cluster.CreateSession()
 
