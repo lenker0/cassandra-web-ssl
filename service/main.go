@@ -148,6 +148,8 @@ func run(c *cli.Context) {
 	cluster.ProtoVersion = 4
     cluster.SslOpts = &gocql.SslOptions{
         Config: tlsConfig,
+        CertPath: "/tmp/certs/cert.pem",,
+        KeyPath: "/tmp/certs/key.pem",,
         CaPath: "/tmp/certs/ca-cert.pem",
         EnableHostVerification: true,
     }
