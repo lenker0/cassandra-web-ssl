@@ -132,7 +132,7 @@ func run(c *cli.Context) {
         // RootCAs:            caCertPool,
         InsecureSkipVerify: true,
         ServerName:         "smartdata.homecredit.ru", // Match the CN or SAN in the server certificate
-        // ClientAuth:         tls.RequireAnyClientCert,
+        ClientAuth:         tls.RequireAndVerifyClientCert,
         CipherSuites:       cipherSuites,
     }
 
